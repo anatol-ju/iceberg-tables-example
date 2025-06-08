@@ -2,6 +2,8 @@
 
 This project demonstrates how to define, provision, and manage Apache Iceberg tables in AWS using the AWS Cloud Development Kit (CDK). It creates a scalable, modular data lakehouse foundation with proper infrastructure-as-code practices.
 
+> 🛠️ This repository was created for demonstration purposes and is part of my engineering portfolio. While it can be adapted for real use cases, it is not actively maintained for production.
+
 ## 🚀 Overview
 
 This repository provisions:
@@ -20,9 +22,9 @@ It supports flexible schema definitions, optional SQL overrides, and SSM-based c
 ```bash
 iceberg-tables-example/
 ├── bin/
-│   └── createIcebergTables.ts     # CDK entry point to deploy infrastructure
+│   └── createIcebergTables.ts    # CDK entry point to deploy infrastructure
 ├── lib/
-│   ├── interfaces.ts              # TypeScript interfaces for table configuration
+│   ├── interfaces.ts             # TypeScript interfaces for table configuration
 │   ├── bucketStack.ts            # CDK stack for creating secure S3 buckets
 │   ├── icebergTableStack.ts      # CDK stack for deploying Iceberg tables
 │   ├── utils.ts                  # Utilities for schema parsing, SSM access, and validation
@@ -35,7 +37,7 @@ iceberg-tables-example/
 
 ---
 
-🔧 Features
+## 🔧 Features
 - Environment-aware deployments via EnvAwareStackProps
 - Custom SQL support with onCreateQuery, onUpdateQuery, and onDeleteQuery
 - JSON Schema → SQL column mapping with custom type conversions
@@ -46,7 +48,7 @@ iceberg-tables-example/
 
 ---
 
-📦 Prerequisites
+## 📦 Prerequisites
 - Node.js ≥ 16
 - AWS CDK v2
 - AWS credentials with permissions for:
@@ -61,7 +63,9 @@ Install dependencies:
 yarn install
 ```
 
-🚚 Deploying the Stack
+---
+
+## 🚚 Deploying the Stack
 1.	Configure your environment
     Edit `stackProps` and `environment` settings in `bin/createIcebergTables.ts`.
 2.	Add your JSON schema
@@ -79,7 +83,9 @@ This will:
 - Create an Iceberg table using Athena
 - Store key table metadata in SSM
 
-🧪 Example Schema Mapping
+---
+
+## 🧪 Example Schema Mapping
 
 Here’s an example of a JSON schema-to-Iceberg conversion using the mapping feature:
 ```typescript
@@ -97,7 +103,9 @@ const mapping = {
 ```
 This will rename `json_str` to `json_map` and convert it to `map<string, int>` in the resulting SQL schema.
 
-🔍 Outputs
+---
+
+## 🔍 Outputs
 
 After deployment, the following will be saved in AWS Systems Manager Parameter Store:
 - Table name
@@ -110,15 +118,16 @@ These can be referenced across your infrastructure for consistency.
 
 ---
 
-📖 Learn More
-- Apache Iceberg Docs
-- AWS CDK Docs
-- AWS Athena Iceberg Setup
-- Glue Catalog Overview
+## 📖 Learn More
+
+- [Apache Iceberg Docs](https://iceberg.apache.org/docs/nightly/)
+- [AWS CDK Docs](https://docs.aws.amazon.com/cdk/v2/guide/home.html)
+- [AWS Athena Iceberg Setup](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html)
+- [Glue Overview](https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html)
 
 ---
 
-🧑‍💻 Author
+## 🧑‍💻 Author
 
 Anatol Jurenkow
 
@@ -128,6 +137,6 @@ Cloud Data Engineer | AWS CDK Enthusiast | Iceberg Fan
 
 ---
 
-📄 License
+## 📄 License
 
 “This project is for portfolio purposes only. Please contact me if you’d like to reuse or adapt this code.”
