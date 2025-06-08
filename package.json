@@ -1,6 +1,6 @@
 {
   "name": "iceberg-tables-example",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "engines": {
     "npm": ">=10.2.4 <11.0.0",
     "node": ">=20.10.0"

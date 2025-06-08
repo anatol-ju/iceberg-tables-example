@@ -31,3 +31,103 @@ iceberg-tables-example/
 │   └── schemas/                  # JSON schema files for Iceberg tables
 ├── package.json
 └── README.md                     # Project documentation (this file)
+```
+
+---
+
+🔧 Features
+- Environment-aware deployments via EnvAwareStackProps
+- Custom SQL support with onCreateQuery, onUpdateQuery, and onDeleteQuery
+- JSON Schema → SQL column mapping with custom type conversions
+- SSM-resolved parameters for runtime bucket config and outputs
+- Partitioned table support for efficient querying
+- Reusable IAM roles with scoped permissions
+- Schema upload to S3 for transparency and auditing
+
+---
+
+📦 Prerequisites
+- Node.js ≥ 16
+- AWS CDK v2
+- AWS credentials with permissions for:
+- S3
+- Athena
+- Glue
+- SSM
+- IAM
+
+Install dependencies:
+```bash
+yarn install
+```
+
+🚚 Deploying the Stack
+1.	Configure your environment
+    Edit `stackProps` and `environment` settings in `bin/createIcebergTables.ts`.
+2.	Add your JSON schema
+    Place your Iceberg-compatible schema in `data/schemas/your_table.schema.json`.
+3.	Define your table properties
+    Adjust or add a new `TableBuildProps` object in `createIcebergTables.ts`.
+4.	Deploy
+    ```
+    yarn deploy:dev
+    ```
+
+This will:
+- Create the bucket
+- Upload schema to S3
+- Create an Iceberg table using Athena
+- Store key table metadata in SSM
+
+🧪 Example Schema Mapping
+
+Here’s an example of a JSON schema-to-Iceberg conversion using the mapping feature:
+```typescript
+const mapping = {
+  "json_str": {
+    "json_map": {
+      "type": "map",
+      "properties": {
+        "key": { "type": "string" },
+        "value": { "type": "integer" }
+      }
+    }
+  }
+};
+```
+This will rename `json_str` to `json_map` and convert it to `map<string, int>` in the resulting SQL schema.
+
+🔍 Outputs
+
+After deployment, the following will be saved in AWS Systems Manager Parameter Store:
+- Table name
+- Table ARN
+- Table S3 location
+- Output S3 path for Athena
+- Path to schema in S3
+
+These can be referenced across your infrastructure for consistency.
+
+---
+
+📖 Learn More
+- Apache Iceberg Docs
+- AWS CDK Docs
+- AWS Athena Iceberg Setup
+- Glue Catalog Overview
+
+---
+
+🧑‍💻 Author
+
+Anatol Jurenkow
+
+Cloud Data Engineer | AWS CDK Enthusiast | Iceberg Fan
+
+(https://github.com/anatol-ju)[GitHub] · (https://de.linkedin.com/in/anatol-jurenkow)[LinkedIn]
+
+---
+
+📄 License
+
+“This project is for portfolio purposes only. Please contact me if you’d like to reuse or adapt this code.”
