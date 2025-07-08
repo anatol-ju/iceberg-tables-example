@@ -15,7 +15,7 @@ const STACKPREFIX = "iceberg-example";
 const bucketStack = new BucketStack(
   app,
   `${STACKPREFIX}-Bucket`,
-  `datalakehouse.${STACKPREFIX}`,
+  `datalakehouse-${STACKPREFIX}`,
   stackProps
 );
 

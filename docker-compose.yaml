@@ -1,0 +1,93 @@
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559" # internal service ports
+    environment:
+      - SERVICES=s3,glue,cloudformation,sts,iam,logs,ssm,lambda
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=eu-west-1
+      - DEBUG=1
+      - PERSISTENCE=/tmp/localstack
+      - EXTRA_HOSTS=cdk-hnb659fds-assets-000000000000-eu-west-1.s3.localhost.localstack.cloud:host.docker.internal
+      - LOCALSTACK_HOSTNAME=localhost
+      - LAMBDA_DOCKER_NETWORK=iceberg-tables-example_default
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack_data:/var/lib/localstack"
+    networks:
+      default:
+        aliases:
+          - cdk-hnb659fds-assets-000000000000-eu-west-1.s3.localhost.localstack.cloud
+          - s3.localhost.localstack.cloud
+    extra_hosts:
+      - "cdk-hnb659fds-assets-000000000000-eu-west-1.s3.localhost.localstack.cloud:127.0.0.1"
+
+  cdk:
+    build:
+      context: .
+      dockerfile: cdk.Dockerfile
+    container_name: cdk-runner
+    depends_on:
+      - localstack
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL_S3=http://s3.localhost.localstack.cloud:4566
+      - AWS_DEFAULT_REGION=eu-west-1
+      - AWS_REGION=eu-west-1
+      - AWS_S3_FORCE_PATH_STYLE=1
+      - AWS_S3_ADDRESSING_STYLE=path
+      - AWS_ENVAR_ALLOWLIST=AWS_DEFAULT_REGION,AWS_REGION,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_ENDPOINT_URL,AWS_ENDPOINT_URL_S3,AWS_S3_FORCE_PATH_STYLE
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: tail -f /dev/null  # <-- disables auto-deploy
+    networks:
+      default:
+        aliases:
+          - s3.localhost.localstack.cloud
+
+# at the bottom of docker-compose.yaml
+networks:
+  default:
+    name: iceberg-tables-example_default
+
+
+# services:
+#   localstack:
+#     image: localstack/localstack:latest
+#     ports:
+#       - "4566:4566"           # main edge port
+#       - "4510-4559:4510-4559" # internal service ports
+#     environment:
+#       SERVICES: "s3,glue,cloudformation,iam,sts"
+#       DEFAULT_REGION: "eu-west-1"
+#       PERSISTENCE: "/tmp/localstack"
+#       DEBUG: "1"
+#     volumes:
+#       - "./localstack_data:/var/lib/localstack"
+#       - "/var/run/docker.sock:/var/run/docker.sock"
+
+#   cdk:
+#     build:
+#       context: .
+#       dockerfile: cdk.Dockerfile
+#     container_name: cdk-runner
+#     working_dir: /app
+#     volumes:
+#       - ./:/app
+#     environment:
+#       AWS_ACCESS_KEY_ID: test
+#       AWS_SECRET_ACCESS_KEY: test
+#       AWS_DEFAULT_REGION: eu-west-1
+#       # cdk-local (below) will read this endpoint
+#       AWS_ENDPOINT_URL: http://localstack:4566
+#       AWS_ENDPOINT_URL_S3: http://localstack:4566
+#     depends_on:
+#       - localstack
+#     command: tail -f /dev/null  # Keeps the container running for manual commands
