@@ -16,8 +16,8 @@ export class IcebergTableStack extends VersionedStack {
         super(scope, id, props);
 
         this.env = props.environment;
-        const account = Stack.of(scope).account;
-        const region = Stack.of(scope).region;
+        const account = props.env?.account ?? Stack.of(scope).account;
+        const region = props.env?.region ?? Stack.of(scope).region;
         if (!account || !region) {
             throw new Error('Account and region must be set to build the iceberg table stack.');
         }
@@ -149,6 +149,14 @@ export class IcebergTableStack extends VersionedStack {
             destinationKeyPrefix: destinationKeyPrefix
         });
 
+        const tableSchemaLocationSsmParameter = `/service/data/${env}/published/iceberg/${props.icebergTableName.toLowerCase()}-schema-location`;
+
+        new ssm.StringParameter(this, `${prefix}-TableSchemaLocationSsmParameter`, {
+            parameterName: tableSchemaLocationSsmParameter,
+            stringValue: `s3://${schemaBucket.bucketName}/${destinationKeyPrefix}${props.schemaFileName}`
+        });
+
+
         const tableNameSsmParameter = `/service/data/${env}/published/iceberg/${props.icebergTableName.toLowerCase()}-name`;
 
         new ssm.StringParameter(this, `${prefix}-TableNameSsmParameter`, {
@@ -182,13 +190,6 @@ export class IcebergTableStack extends VersionedStack {
         new ssm.StringParameter(this, `${prefix}-outputSsmParameter`, {
             parameterName: outputSsmParameter,
             stringValue: outputLocation + "temp/"
-        });
-
-        const tableSchemaLocationSsmParameter = `/service/data/${env}/published/iceberg/${props.icebergTableName.toLowerCase()}-schema-location`;
-
-        new ssm.StringParameter(this, `${prefix}-TableSchemaLocationSsmParameter`, {
-            parameterName: tableSchemaLocationSsmParameter,
-            stringValue: `s3://${schemaBucket.bucketName}/${destinationKeyPrefix}${props.schemaFileName}`
         });
     }
 }

@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/iceberg-tables-example.ts",
+  "app": "npx ts-node --prefer-ts-exts bin/index.ts",
   "watch": {
     "include": [
       "**"
@@ -18,6 +18,10 @@
   },
   "context": {
     "envs": {
+      "local": {
+        "account": "000000000000",
+        "region": "eu-west-1"
+      },
       "dev": {
         "account": "111111111111",
         "region": "eu-west-1"
@@ -34,6 +38,9 @@
         "account": "444444444444",
         "region": "eu-west-1"
       }
-    }
+    },
+    "@aws-cdk/customresources:installLatestAwsSdkDefault": false,
+    "aws:s3ForcePathStyle": true,
+    "aws:cdk:disable-asset-staging": true
   }
 }

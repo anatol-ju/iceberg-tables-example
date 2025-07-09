@@ -43,11 +43,12 @@ export function getSdkCall(props: SdkCallProps): AwsSdkCall {
  * @returns The path to the temporary folder containing the schema file.
  */
 export function prepareSchemaAsset(schemaFileName: string): string {
-    const tempDir = join(__dirname, `../cdk.out/schema-deploy/${schemaFileName}`);
-    const inputPath = join(__dirname, `../data/schemas/${schemaFileName}`);
+    const tempDir = join(__dirname, `../cdk.out/schema-deploy`);
+    const inputPath = join(__dirname, `../src/schemas/${schemaFileName}`);
+    const outputPath = join(tempDir, schemaFileName); // Full file path for the copied file
 
     fs.mkdirSync(tempDir, { recursive: true });
-    fs.copyFileSync(inputPath, join(tempDir, schemaFileName));
+    fs.copyFileSync(inputPath, outputPath);
 
     return tempDir;
 }

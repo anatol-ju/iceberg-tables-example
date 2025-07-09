@@ -118,6 +118,45 @@ These can be referenced across your infrastructure for consistency.
 
 ---
 
+## 📋 Local Setup
+
+To spin up a fully local test environment (no real AWS):
+
+1. Ensure Docker and Docker Compose are installed on your machine.
+2. From the project root, bring up all services:
+   ```bash
+   make start
+   ```
+   This starts two containers:
+   - **localstack**: emulates AWS S3, Glue, CloudFormation, IAM, STS
+   - **cdk**: runs `cdklocal` to bootstrap and deploy your CDK stacks into LocalStack
+
+3. Deploy your CDK stacks locally:
+   ```bash
+   make deploy
+   ```
+   This uses `cdklocal` to create S3 buckets, Glue databases, and Iceberg tables in LocalStack.
+
+4. Inspect your bucket contents (optional):
+   ```bash
+   awslocal s3 ls s3://<your-warehouse-bucket>/warehouse/ --recursive
+   ```
+   or from your host:
+   ```bash
+   aws s3 ls s3://<your-warehouse-bucket>/warehouse/ --recursive \
+       --endpoint-url http://localhost:4566 --region eu-west-1
+   ```
+
+You now have a zero-cost, offline playground for developing and testing your Iceberg CDK stacks.
+
+IMPORTANT:
+
+The deployment can be shown as successful, but you can't access the table.
+This is because Localstack Pro is required to use AWS Glue.
+You can still use this setup with the standard Localstack to test whether your CDK stack can be deployed.
+
+---
+
 ## 📖 Learn More
 
 - [Apache Iceberg Docs](https://iceberg.apache.org/docs/nightly/)

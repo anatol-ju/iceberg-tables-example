@@ -23,13 +23,16 @@ export class BucketStack extends VersionedStack {
         if (!bucketName) {
             throw new Error('bucketName is required to create the bucket.');
         }
+        // Use automatically generated bucket names for local environment
+        const isLocal = props.environment === "local";
+
         this.bucket = new Bucket(this, id, {
-            bucketName,
+            bucketName: bucketName,
             blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
             encryption: BucketEncryption.S3_MANAGED,
             enforceSSL: true,
             versioned: false,
-            removalPolicy: RemovalPolicy.RETAIN,
+            removalPolicy: RemovalPolicy.RETAIN
         });
     }
 }
