@@ -27,7 +27,7 @@ export class BucketStack extends VersionedStack {
         const isLocal = props.environment === "local";
 
         this.bucket = new Bucket(this, id, {
-            ...(isLocal ? {} : { bucketName }),
+            bucketName: bucketName,
             blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
             encryption: BucketEncryption.S3_MANAGED,
             enforceSSL: true,

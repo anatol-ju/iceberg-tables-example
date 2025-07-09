@@ -1,6 +1,6 @@
 {
   "name": "iceberg-tables-example",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "npm": ">=10.2.4 <11.0.0",
     "node": ">=20.10.0"
@@ -16,8 +16,8 @@
     "deploy:qa": "cdk deploy -c env=qa --profile example-qa --require-approval never --all",
     "deploy:staging": "cdk deploy -c env=staging --profile example-staging --require-approval never --all",
     "deploy:prod": "cdk deploy -c env=prod --profile example-prod --require-approval never --all",
-    "deploy:local": "docker compose up -d localstack && yarn deploy:local:internal",
-    "deploy:local:internal": "cdklocal deploy --app \"npx ts-node bin/index.ts\" -c env=local --require-approval never --all --no-staging"
+    "deploy:local": "docker compose up -d && docker compose exec cdk bash -lc 'cdklocal bootstrap -c env=local -v' && yarn deploy:local:internal",
+    "deploy:local:internal": "docker compose exec cdk cdklocal deploy --app \"npx ts-node bin/index.ts\" -c env=local --require-approval never --all --no-staging"
   },
   "packageManager": "yarn@4.9.2",
   "dependencies": {
